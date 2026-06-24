@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Admin Panel – Wanderlust</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+  {% include 'navbar.html' %}
+  <div style="padding-top:5rem;"></div>
+  <div class="admin-layout">
+    <!-- Stats -->
+    <div class="admin-stats fade-in">
+      <div class="admin-stat"><div class="admin-stat-icon"><i class="fas fa-users"></i></div><div class="admin-stat-info"><div class="num">{{ stats.total_users }}</div><div class="lbl">Total Users</div></div></div>
+      <div class="admin-stat"><div class="admin-stat-icon"><i class="fas fa-box"></i></div><div class="admin-stat-info"><div class="num">{{ stats.total_packages }}</div><div class="lbl">Packages</div></div></div>
+      <div class="admin-stat"><div class="admin-stat-icon"><i class="fas fa-ticket-alt"></i></div><div class="admin-stat-info"><div class="num">{{ stats.total_bookings }}</div><div class="lbl">Bookings</div></div></div>
+    </div>
+
+    <!-- Packages -->
+    <div class="section-card fade-in">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+        <h3><i class="fas fa-map-marked-alt" style="color:var(--accent);margin-right:0.5rem;"></i>Packages</h3>
+        <button class="btn-primary" style="padding:0.55rem 1.2rem;font-size:0.85rem;" onclick="openModal('add-pkg-modal')"><i class="fas fa-plus"></i> Add Package</button>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Price</th><th>Image</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for p in packages %}
+            <tr>
+              <td>{{ p.id }}</td>
+              <td style="color:var(--text);font-weight:600;">{{ p.title }}</td>
+              <td>${{ "%.2f"|format(p.price) }}</td>
+              <td style="font-size:0.8rem;">{{ p.image_url }}</td>
+              <td><button class="btn-danger" data-delete="/admin/package/{{ p.id }}">Delete</button></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Users -->
+    <div class="section-card fade-in">
+      <h3><i class="fas fa-users" style="color:var(--accent);margin-right:0.5rem;"></i>Users</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for u in users %}
+            <tr>
+              <td>{{ u.id }}</td>
+              <td style="color:var(--text);">{{ u.name }}</td>
+              <td>{{ u.email }}</td>
+              <td><span class="badge badge-{{ u.role }}">{{ u.role }}</span></td>
+              <td><button class="btn-danger" data-delete="/admin/user/{{ u.id }}">Delete</button></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Bookings -->
+    <div class="section-card fade-in">
+      <h3><i class="fas fa-ticket-alt" style="color:var(--accent);margin-right:0.5rem;"></i>Bookings</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>ID</th><th>User</th><th>Package</th><th>Travel Date</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for b in bookings %}
+            <tr>
+              <td>{{ b.id }}</td>
+              <td>{{ b.email }}</td>
+              <td style="color:var(--text);">{{ b.destination }}</td>
+              <td>{{ b.travel_date }}</td>
+              <td><button class="btn-danger" data-delete="/admin/booking/{{ b.id }}">Delete</button></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Package Modal -->
+  <div class="modal-overlay" id="add-pkg-modal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('add-pkg-modal')"><i class="fas fa-times"></i></button>
+      <h3><i class="fas fa-plus-circle" style="color:var(--accent);margin-right:0.5rem;"></i>Add New Package</h3>
+      <form id="add-pkg-form">
+        <div class="form-group"><label>Title</label><input type="text" name="title" required placeholder="e.g. Bali Paradise"/></div>
+        <div class="form-group"><label>Description</label><input type="text" name="description" required placeholder="Short description"/></div>
+        <div class="form-group"><label>Price (USD)</label><input type="number" name="price" required min="1" step="0.01" placeholder="1499.99"/></div>
+        <div class="form-group"><label>Image Filename</label><input type="text" name="image_url" required placeholder="bali.jpg"/></div>
+        <button class="btn-full" type="submit"><i class="fas fa-save"></i> Save Package</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

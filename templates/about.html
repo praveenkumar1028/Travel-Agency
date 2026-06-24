@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>About Us – Wanderlust</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <style>
+    .team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;}
+    .team-card{background:var(--secondary);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;text-align:center;transition:all .3s;}
+    .team-card:hover{border-color:rgba(245,158,11,.3);transform:translateY(-5px);}
+    .team-avatar{width:80px;height:80px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;margin:0 auto 1rem;}
+    .team-card h4{font-weight:700;margin-bottom:.3rem;}
+    .team-card p{font-size:.82rem;color:var(--text-muted);}
+    .timeline{position:relative;padding-left:2rem;}
+    .timeline::before{content:'';position:absolute;left:.5rem;top:0;bottom:0;width:2px;background:var(--border);}
+    .timeline-item{position:relative;margin-bottom:2rem;padding-left:2rem;}
+    .timeline-item::before{content:'';position:absolute;left:-1.6rem;top:.3rem;width:12px;height:12px;border-radius:50%;background:var(--gradient);}
+    .timeline-year{font-size:.78rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.1em;}
+    .timeline-item h4{font-weight:600;margin:.3rem 0;}
+    .timeline-item p{font-size:.85rem;color:var(--text-muted);line-height:1.7;}
+  </style>
+</head>
+<body>
+  {% include 'navbar.html' %}
+  <div class="page-hero">
+    <div class="section-label">Our Story</div>
+    <h1 class="section-title">About Wanderlust</h1>
+    <p style="color:var(--text-muted);">Born from a passion for exploration, built for the modern traveller.</p>
+  </div>
+
+  <!-- Mission -->
+  <section class="fade-in" style="max-width:900px;margin:0 auto;">
+    <div style="text-align:center;">
+      <div class="section-label">Our Mission</div>
+      <h2 class="section-title">Making the World Accessible</h2>
+      <p style="color:var(--text-muted);line-height:1.9;font-size:1.05rem;margin-top:1rem;">
+        At Wanderlust, we believe travel is the most powerful force for personal growth, cultural understanding, and lifelong memories. Since 2015, we've helped over 15,000 travellers discover the beauty of our world — from overwater bungalows in the Maldives to ancient temples in Japan. Every package is curated with care, every detail planned with precision, so you can simply enjoy the journey.
+      </p>
+    </div>
+    <div class="features-grid" style="margin-top:3rem;">
+      <div class="feature-card fade-in"><div class="feature-icon"><i class="fas fa-heart"></i></div><h3>Passion-Driven</h3><p>Every team member is a passionate traveller who personally vets each destination.</p></div>
+      <div class="feature-card fade-in"><div class="feature-icon"><i class="fas fa-leaf"></i></div><h3>Sustainable</h3><p>We partner only with eco-conscious operators committed to responsible tourism.</p></div>
+      <div class="feature-card fade-in"><div class="feature-icon"><i class="fas fa-handshake"></i></div><h3>Trusted</h3><p>98% satisfaction rate with over 15,000 happy travellers and counting.</p></div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="fade-in" style="background:var(--secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="section-header center">
+      <div class="section-label">The Team</div>
+      <h2 class="section-title">Meet Our Experts</h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-card fade-in"><div class="team-avatar">P</div><h4>Praveen Kumar</h4><p>Founder & CEO</p></div>
+      <div class="team-card fade-in"><div class="team-avatar">S</div><h4>Sarah Johnson</h4><p>Head of Destinations</p></div>
+      <div class="team-card fade-in"><div class="team-avatar">M</div><h4>Marco Rossi</h4><p>Lead Travel Designer</p></div>
+      <div class="team-card fade-in"><div class="team-avatar">A</div><h4>Aisha Patel</h4><p>Customer Experience</p></div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="fade-in" style="max-width:700px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-label">Our Journey</div>
+      <h2 class="section-title">Milestones</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item"><div class="timeline-year">2015</div><h4>Founded</h4><p>Wanderlust was born in Mumbai with a team of 3 passionate travellers and a big dream.</p></div>
+      <div class="timeline-item"><div class="timeline-year">2017</div><h4>1,000 Travellers</h4><p>We hit our first major milestone — 1,000 happy customers and 20 destinations.</p></div>
+      <div class="timeline-item"><div class="timeline-year">2020</div><h4>Digital Transformation</h4><p>Launched our fully dynamic online booking platform during the global travel hiatus.</p></div>
+      <div class="timeline-item"><div class="timeline-year">2023</div><h4>10,000 Journeys</h4><p>Crossed 10,000 bookings and expanded to 80+ destinations across 6 continents.</p></div>
+      <div class="timeline-item"><div class="timeline-year">2025</div><h4>15,000+ Travellers</h4><p>Today we serve over 15,000 travellers with a 98% satisfaction rate and growing.</p></div>
+    </div>
+  </section>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

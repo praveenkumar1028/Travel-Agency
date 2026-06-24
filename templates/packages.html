@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>All Packages – Wanderlust</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <style>
+    .filter-bar{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;margin-bottom:2.5rem;padding:1.2rem 1.5rem;background:var(--secondary);border:1px solid var(--border);border-radius:var(--radius);}
+    .filter-btn{padding:.5rem 1.2rem;border-radius:50px;font-size:.82rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-muted);transition:all .3s;font-family:inherit;}
+    .filter-btn.active,.filter-btn:hover{background:var(--gradient);border-color:transparent;color:#fff;}
+    .pkg-rating{font-size:.8rem;color:var(--accent);margin-bottom:.8rem;}
+    .pkg-duration{font-size:.78rem;color:var(--text-muted);margin-bottom:.5rem;}
+  </style>
+</head>
+<body>
+  {% include 'navbar.html' %}
+  <div class="page-hero">
+    <div class="section-label">Explore the World</div>
+    <h1 class="section-title">All Destinations</h1>
+    <p style="color:var(--text-muted);">{{ packages|length }} curated packages available right now.</p>
+  </div>
+  <section>
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <a href="{{ url_for('packages') }}" class="filter-btn {% if not active_cat %}active{% endif %}">All</a>
+      {% for cat in categories %}
+      <a href="{{ url_for('packages', category=cat) }}" class="filter-btn {% if active_cat==cat %}active{% endif %}">{{ cat }}</a>
+      {% endfor %}
+      <form action="{{ url_for('search') }}" method="GET" style="margin-left:auto;display:flex;gap:.5rem;">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search…" style="padding:.5rem 1rem;background:var(--glass);border:1px solid var(--border);border-radius:50px;color:var(--text);font-size:.85rem;outline:none;font-family:inherit;" />
+        <button type="submit" class="filter-btn active" style="white-space:nowrap;">Search</button>
+      </form>
+    </div>
+
+    <div class="packages-grid">
+      {% for pkg in packages %}
+      <div class="pkg-card fade-in">
+        <div class="pkg-img-wrapper">
+          <img src="{{ url_for('static', filename='images/' + pkg.image_url) }}" alt="{{ pkg.title }}"/>
+          <div class="pkg-badge">{{ pkg.category }}</div>
+          {% if session.get('user_id') %}
+          <button onclick="toggleWishlist({{ pkg.id }}, this)" style="position:absolute;top:.8rem;right:.8rem;background:rgba(0,0,0,.5);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;color:{% if pkg.id in wishlist_ids %}#ef4444{% else %}#fff{% endif %};font-size:.9rem;display:flex;align-items:center;justify-content:center;">
+            <i class="fa{% if pkg.id in wishlist_ids %}s{% else %}r{% endif %} fa-heart"></i>
+          </button>
+          {% endif %}
+        </div>
+        <div class="pkg-body">
+          <div class="pkg-duration"><i class="fas fa-clock"></i> {{ pkg.duration }}</div>
+          <div class="pkg-rating">{% for i in range(pkg.rating|int) %}<i class="fas fa-star"></i>{% endfor %} {{ pkg.rating }}</div>
+          <h3>{{ pkg.title }}</h3>
+          <p>{{ pkg.description }}</p>
+          <div class="pkg-meta">
+            <div class="pkg-price">${{ "%.2f"|format(pkg.price) }}<span>/person</span></div>
+            <div style="display:flex;gap:.5rem;">
+              <a href="{{ url_for('package_detail', pkg_id=pkg.id) }}" class="btn-sm">Details</a>
+              <a href="{{ url_for('book') }}?pkg={{ pkg.id }}" class="btn-book">Book</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-search"></i><p>No packages found. Try a different search or filter.</p></div>
+      {% endfor %}
+    </div>
+  </section>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+  async function toggleWishlist(pkgId, btn) {
+    {% if not session.get('user_id') %}window.location='/login'; return;{% endif %}
+    const res = await fetch(`/wishlist/toggle/${pkgId}`, {method:'POST'});
+    const d = await res.json();
+    const icon = btn.querySelector('i');
+    if(d.status==='added'){icon.className='fas fa-heart';btn.style.color='#ef4444';}
+    else{icon.className='far fa-heart';btn.style.color='#fff';}
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Blog – Wanderlust</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <style>
+    .blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;}
+    .blog-card{background:var(--secondary);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all .4s;cursor:pointer;}
+    .blog-card:hover{transform:translateY(-10px);box-shadow:var(--shadow);border-color:rgba(245,158,11,.3);}
+    .blog-card img{width:100%;height:200px;object-fit:cover;transition:transform .6s;}
+    .blog-card:hover img{transform:scale(1.06);}
+    .blog-img-wrap{overflow:hidden;}
+    .blog-body{padding:1.5rem;}
+    .blog-meta{font-size:.78rem;color:var(--text-muted);margin-bottom:.8rem;}
+    .blog-body h3{font-size:1.1rem;font-weight:700;margin-bottom:.7rem;line-height:1.4;}
+    .blog-body p{font-size:.87rem;color:var(--text-muted);line-height:1.7;margin-bottom:1.2rem;}
+  </style>
+</head>
+<body>
+  {% include 'navbar.html' %}
+  <div class="page-hero">
+    <div class="section-label">Travel Inspiration</div>
+    <h1 class="section-title">Our Blog</h1>
+    <p style="color:var(--text-muted);">Stories, guides, and tips from our expert travellers around the world.</p>
+  </div>
+  <section>
+    <div class="blog-grid">
+      {% for post in posts %}
+      <div class="blog-card fade-in" onclick="location.href='{{ url_for('blog_post', slug=post.slug) }}'">
+        <div class="blog-img-wrap">
+          <img src="{{ url_for('static', filename='images/' + post.image_url) }}" alt="{{ post.title }}"/>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><i class="fas fa-user"></i> {{ post.author }} &nbsp;&bull;&nbsp; <i class="fas fa-calendar"></i> {{ post.created_at[:10] }}</div>
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.excerpt }}</p>
+          <a href="{{ url_for('blog_post', slug=post.slug) }}" class="btn-sm">Read More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      {% else %}
+      <div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-newspaper"></i><p>No blog posts yet. Check back soon!</p></div>
+      {% endfor %}
+    </div>
+  </section>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

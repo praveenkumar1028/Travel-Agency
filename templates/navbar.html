@@ -1,0 +1,41 @@
+<nav>
+  <a class="nav-logo" href="{{ url_for('index') }}">
+    <i class="fas fa-globe-americas"></i><span>Wanderlust</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('index') }}">Home</a></li>
+    <li><a href="{{ url_for('packages') }}">Destinations</a></li>
+    <li><a href="{{ url_for('blog') }}">Blog</a></li>
+    <li><a href="{{ url_for('about') }}">About</a></li>
+    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+    {% if session.get('role') == 'admin' %}
+    <li><a href="{{ url_for('admin') }}" style="color:var(--accent);">Admin</a></li>
+    {% endif %}
+  </ul>
+  <form class="search-bar" action="{{ url_for('search') }}" method="GET">
+    <i class="fas fa-search" style="color:var(--text-muted);font-size:0.85rem;"></i>
+    <input type="text" name="q" placeholder="Search destinations…" id="nav-search" autocomplete="off"/>
+    <button type="submit">Go</button>
+    <div class="search-dropdown" id="search-dropdown"></div>
+  </form>
+  <div class="nav-auth">
+    {% if session.get('user_id') %}
+      <a href="{{ url_for('dashboard') }}" class="btn-outline">
+        <i class="fas fa-user"></i> {{ session.get('name','Account') }}
+      </a>
+      <a href="{{ url_for('logout') }}" class="btn-primary">Logout</a>
+    {% else %}
+      <a href="{{ url_for('login') }}" class="btn-outline">Login</a>
+      <a href="{{ url_for('register') }}" class="btn-primary">Get Started</a>
+    {% endif %}
+  </div>
+</nav>
+
+<!-- Flash messages -->
+<div class="flash-container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="flash {{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>

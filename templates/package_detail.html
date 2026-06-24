@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Package Detail – Wanderlust</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <style>
+    .detail-hero{position:relative;height:70vh;background:center/cover no-repeat;display:flex;align-items:flex-end;}
+    .detail-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(10,15,30,.95) 0%,rgba(10,15,30,.3) 60%);}
+    .detail-hero-content{position:relative;z-index:2;padding:3rem 5%;width:100%;}
+    .detail-meta{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1rem;}
+    .detail-meta span{display:flex;align-items:center;gap:.4rem;font-size:.88rem;color:var(--text-muted);}
+    .detail-body{display:grid;grid-template-columns:1fr 360px;gap:2.5rem;max-width:1200px;margin:0 auto;padding:3rem 5%;}
+    .detail-main .section-card{margin-bottom:2rem;}
+    .review-card{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1rem;}
+    .review-stars{color:var(--accent);font-size:.85rem;margin-bottom:.5rem;}
+    .review-author{font-size:.8rem;color:var(--text-muted);margin-top:.8rem;}
+    .sticky-book{position:sticky;top:100px;}
+    .star-select{display:flex;gap:.4rem;margin-bottom:1rem;}
+    .star-select label{font-size:1.5rem;cursor:pointer;color:var(--border);transition:color.2s;}
+    .star-select input{display:none;}
+    .star-select input:checked~label,.star-select label:hover,.star-select label:hover~label{color:var(--accent);}
+    .star-select{flex-direction:row-reverse;justify-content:flex-end;}
+    @media(max-width:900px){.detail-body{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  {% include 'navbar.html' %}
+
+  <!-- Hero -->
+  <div class="detail-hero" style="background-image:url('{{ url_for('static', filename='images/' + pkg.image_url) }}')">
+    <div class="detail-hero-content">
+      <span class="hero-badge"><i class="fas fa-tag"></i> {{ pkg.category }}</span>
+      <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.5rem);margin-top:.8rem;">{{ pkg.title }}</h1>
+      <div class="detail-meta">
+        <span><i class="fas fa-star" style="color:var(--accent);"></i> {{ avg_rating }} rating</span>
+        <span><i class="fas fa-clock"></i> {{ pkg.duration }}</span>
+        <span><i class="fas fa-globe"></i> {{ pkg.category }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-body">
+    <!-- Main Content -->
+    <div class="detail-main">
+      <div class="section-card">
+        <h3>About This Package</h3>
+        <p style="color:var(--text-muted);line-height:1.9;margin-top:1rem;">{{ pkg.long_description or pkg.description }}</p>
+      </div>
+
+      <!-- Reviews -->
+      <div class="section-card">
+        <h3><i class="fas fa-star" style="color:var(--accent);margin-right:.5rem;"></i>Reviews ({{ reviews|length }})</h3>
+        {% if reviews %}
+          {% for r in reviews %}
+          <div class="review-card">
+            <div class="review-stars">{% for i in range(r.rating) %}<i class="fas fa-star"></i>{% endfor %}{% for i in range(5-r.rating) %}<i class="far fa-star"></i>{% endfor %}</div>
+            <p style="font-size:.9rem;color:var(--text);">{{ r.comment }}</p>
+            <div class="review-author"><i class="fas fa-user-circle"></i> {{ r.user_name }} &middot; {{ r.created_at[:10] }}</div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state"><i class="fas fa-comment-slash"></i><p>No reviews yet. Be the first!</p></div>
+        {% endif %}
+      </div>
+
+      <!-- Add Review -->
+      {% if session.get('user_id') %}
+      <div class="section-card">
+        <h3>Write a Review</h3>
+        <form method="POST" action="{{ url_for('add_review', pkg_id=pkg.id) }}" style="margin-top:1rem;">
+          <div class="form-group">
+            <label>Rating</label>
+            <div class="star-select">
+              <input type="radio" name="rating" id="s5" value="5"><label for="s5"><i class="fas fa-star"></i></label>
+              <input type="radio" name="rating" id="s4" value="4"><label for="s4"><i class="fas fa-star"></i></label>
+              <input type="radio" name="rating" id="s3" value="3" checked><label for="s3"><i class="fas fa-star"></i></label>
+              <input type="radio" name="rating" id="s2" value="2"><label for="s2"><i class="fas fa-star"></i></label>
+              <input type="radio" name="rating" id="s1" value="1"><label for="s1"><i class="fas fa-star"></i></label>
+            </div>
+          </div>
+          <div class="form-group"><label>Your Review</label><textarea name="comment" rows="4" placeholder="Share your experience…" required style="resize:vertical;"></textarea></div>
+          <button class="btn-full" type="submit">Submit Review</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Sticky Booking Sidebar -->
+    <div class="sticky-book">
+      <div class="booking-summary">
+        <div style="font-size:2rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${{ "%.2f"|format(pkg.price) }}<span style="font-size:.9rem;color:var(--text-muted);font-weight:400;"> /person</span></div>
+        <div style="margin:1.2rem 0;padding:1rem;background:var(--glass);border-radius:12px;border:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.6rem;"><span style="color:var(--text-muted);">Duration</span><span>{{ pkg.duration }}</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.6rem;"><span style="color:var(--text-muted);">Category</span><span>{{ pkg.category }}</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;"><span style="color:var(--text-muted);">Rating</span><span style="color:var(--accent);">{{ avg_rating }} <i class="fas fa-star"></i></span></div>
+        </div>
+        <a href="{{ url_for('book') }}?pkg={{ pkg.id }}" class="btn-full" style="display:block;text-align:center;text-decoration:none;padding:1rem;"><i class="fas fa-calendar-check"></i> Book Now</a>
+        {% if session.get('user_id') %}
+        <button onclick="toggleWishlist({{ pkg.id }}, this)" class="btn-outline" style="width:100%;margin-top:.8rem;padding:.8rem;" id="wishlist-btn">
+          <i class="fa{% if in_wishlist %}s{% else %}r{% endif %} fa-heart" style="color:{% if in_wishlist %}#ef4444{% else %}inherit{% endif %};"></i>
+          {% if in_wishlist %}Saved{% else %}Save to Wishlist{% endif %}
+        </button>
+        {% endif %}
+        <div style="margin-top:1.2rem;padding:1rem;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:12px;font-size:.82rem;color:#10b981;">
+          <i class="fas fa-shield-alt"></i> Free cancellation within 24h &bull; Secure payment
+        </div>
+      </div>
+
+      <!-- Related Packages -->
+      {% if related %}
+      <div class="section-card" style="margin-top:1.5rem;">
+        <h3 style="font-size:1rem;margin-bottom:1rem;">Similar Packages</h3>
+        {% for r in related %}
+        <a href="{{ url_for('package_detail', pkg_id=r.id) }}" style="display:flex;gap:.8rem;align-items:center;margin-bottom:1rem;text-decoration:none;padding:.7rem;border-radius:10px;border:1px solid var(--border);transition:all .3s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+          <img src="{{ url_for('static', filename='images/' + r.image_url) }}" style="width:56px;height:56px;border-radius:8px;object-fit:cover;"/>
+          <div><div style="font-size:.88rem;font-weight:600;color:var(--text);">{{ r.title }}</div><div style="font-size:.8rem;color:var(--accent);">${{ "%.2f"|format(r.price) }}</div></div>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+  async function toggleWishlist(pkgId, btn) {
+    const res = await fetch(`/wishlist/toggle/${pkgId}`, {method:'POST'});
+    const data = await res.json();
+    const icon = btn.querySelector('i');
+    if(data.status === 'added') {
+      icon.className = 'fas fa-heart'; icon.style.color='#ef4444'; btn.innerHTML = '<i class="fas fa-heart" style="color:#ef4444"></i> Saved';
+    } else {
+      btn.innerHTML = '<i class="far fa-heart"></i> Save to Wishlist';
+    }
+  }
+  </script>
+</body>
+</html>

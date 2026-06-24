@@ -1,0 +1,6 @@
+# Wanderlust Travel Agency – Python Dependencies
+# Install with: pip install -r requirements.txt
+# Python 3.10+ required
+
+Flask>=2.3.0
+Werkzeug>=2.3.0

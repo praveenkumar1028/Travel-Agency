@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Wanderlust – Explore Dream Destinations</title>
+  <meta name="description" content="Premium travel agency offering curated itineraries and seamless bookings worldwide."/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+  {% include 'navbar.html' %}
+
+  <!-- HERO -->
+  <section class="hero" style="background-image:url('{{ url_for('static', filename='images/hero.jpg') }}')">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fas fa-star"></i> #1 Travel Agency 2025</div>
+      <h1>Explore <span>Dream</span><br>Destinations</h1>
+      <p>Discover breathtaking places around the world with our curated travel packages, expert guides, and unforgettable experiences.</p>
+      <div class="hero-btns">
+        <a href="{{ url_for('packages') }}" class="btn-primary" style="padding:0.9rem 2.2rem;font-size:1rem;">Explore Packages</a>
+        <a href="{{ url_for('book') }}" class="btn-outline" style="padding:0.9rem 2.2rem;font-size:1rem;">Book a Trip</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num" data-target="15000" data-suffix="+">0</div><div class="label">Happy Travellers</div></div>
+      <div class="hero-stat"><div class="num" data-target="120" data-suffix="+">0</div><div class="label">Destinations</div></div>
+      <div class="hero-stat"><div class="num" data-target="98" data-suffix="%">0</div><div class="label">Satisfaction</div></div>
+    </div>
+    <div class="scroll-indicator"><i class="fas fa-chevron-down"></i><span>Scroll</span></div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="fade-in">
+    <div class="section-header">
+      <div class="section-label">Why Choose Us</div>
+      <h2 class="section-title">Travel With Confidence</h2>
+      <p class="section-subtitle">We take care of everything so you can focus on enjoying the journey.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Safe & Secure</h3>
+        <p>All bookings are protected with bank-grade security and travel insurance options.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon"><i class="fas fa-headset"></i></div>
+        <h3>24/7 Support</h3>
+        <p>Our dedicated travel experts are available around the clock wherever you are.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon"><i class="fas fa-tags"></i></div>
+        <h3>Best Price Guarantee</h3>
+        <p>Find a better price anywhere else and we'll match it — guaranteed.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
+        <h3>Curated Itineraries</h3>
+        <p>Every package is handcrafted by travel experts for unforgettable experiences.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PACKAGES -->
+  <section class="fade-in" style="background:var(--secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="section-header center">
+      <div class="section-label">Top Picks</div>
+      <h2 class="section-title">Featured Destinations</h2>
+      <p class="section-subtitle">Handpicked destinations our travellers love the most this season.</p>
+    </div>
+    <div class="packages-grid">
+      {% for pkg in featured %}
+      <div class="pkg-card fade-in" onclick="location.href='{{ url_for('book') }}?pkg={{ pkg.id }}'">
+        <div class="pkg-img-wrapper">
+          <img src="{{ url_for('static', filename='images/' + pkg.image_url) }}" alt="{{ pkg.title }}"/>
+          <div class="pkg-badge">Featured</div>
+        </div>
+        <div class="pkg-body">
+          <h3>{{ pkg.title }}</h3>
+          <p>{{ pkg.description }}</p>
+          <div class="pkg-meta">
+            <div class="pkg-price">${{ "%.2f"|format(pkg.price) }}<span>/person</span></div>
+            <a href="{{ url_for('book') }}?pkg={{ pkg.id }}" class="btn-book">Book Now</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:3rem;">
+      <a href="{{ url_for('packages') }}" class="btn-primary" style="padding:0.9rem 2.5rem;font-size:1rem;">View All Destinations</a>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials fade-in">
+    <div class="section-header center">
+      <div class="section-label">Reviews</div>
+      <h2 class="section-title">What Our Travellers Say</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testi-card fade-in">
+        <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p>"Absolutely incredible experience! Every detail was perfectly organised. The Maldives trip was a dream come true."</p>
+        <div class="testi-author"><div class="testi-avatar">S</div><div><div class="testi-name">Sarah Johnson</div><div class="testi-loc">New York, USA</div></div></div>
+      </div>
+      <div class="testi-card fade-in">
+        <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p>"Wanderlust made our Japan trip effortless. The itinerary was packed with hidden gems. Highly recommended!"</p>
+        <div class="testi-author"><div class="testi-avatar">M</div><div><div class="testi-name">Marco Rossi</div><div class="testi-loc">Milan, Italy</div></div></div>
+      </div>
+      <div class="testi-card fade-in">
+        <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+        <p>"Best travel agency I've used. The Swiss Alps package exceeded every expectation. Will definitely book again!"</p>
+        <div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Aisha Patel</div><div class="testi-loc">London, UK</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter fade-in">
+    <div class="section-label" style="text-align:center">Stay Updated</div>
+    <h2 class="section-title" style="text-align:center">Get Exclusive Travel Deals</h2>
+    <p style="text-align:center;color:var(--text-muted);max-width:450px;margin:0 auto;">Subscribe to our newsletter for early access to deals, travel tips, and destination guides.</p>
+    <form class="newsletter-form" onsubmit="event.preventDefault();alert('Thanks for subscribing!')">
+      <input type="email" placeholder="Enter your email address" required/>
+      <button class="btn-primary" type="submit" style="padding:0.9rem 1.5rem;border-radius:50px;white-space:nowrap;">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="{{ url_for('index') }}" style="display:inline-flex;margin-bottom:0.5rem;">
+          <i class="fas fa-globe-americas"></i><span>Wanderlust</span>
+        </a>
+        <p>Crafting unforgettable journeys across the world since 2015. Your adventure begins here.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Destinations</h4>
+        <ul>
+          <li><a href="{{ url_for('packages') }}">Maldives</a></li>
+          <li><a href="{{ url_for('packages') }}">Switzerland</a></li>
+          <li><a href="{{ url_for('packages') }}">Japan</a></li>
+          <li><a href="{{ url_for('packages') }}">Dubai</a></li>
+          <li><a href="{{ url_for('packages') }}">Paris</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="{{ url_for('book') }}">Book a Trip</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Wanderlust Travel Agency. All rights reserved.</span>
+      <span>Made with <i class="fas fa-heart" style="color:#ef4444;"></i> for travellers</span>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
